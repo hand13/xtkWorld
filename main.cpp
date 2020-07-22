@@ -1,31 +1,21 @@
 #include <windows.h>
 #include "main.h"
-#include <fmt/format.h>
 #include <iostream>
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#include "util.h"
-#include "device.h"
-#include "image.h"
-static DirectWorld directWorld;
+#include "direct_world.h"
+static TheWorld theWorld;
 int WINAPI WinMain(HINSTANCE hi,HINSTANCE ,LPSTR ,int cmd) {
-  enableConsole();
   WNDCLASSEX wc = {sizeof(WNDCLASSEX),CS_CLASSDC,WndProc,0L,0L,hi,NULL,NULL,NULL,NULL,TEXT("testing"),NULL};
   ::RegisterClassEx(&wc);
-  fmt::print("register windowclassex\n");
   HWND hwnd = CreateWindow(TEXT("testing"),TEXT("ho"),WS_OVERLAPPEDWINDOW,100,100,600,600,NULL,NULL,wc.hInstance,NULL);
   ::ShowWindow(hwnd,cmd);
   ::UpdateWindow(hwnd);
   bool flag = true;
-  if(!directWorld.init(hwnd)) {
-    directWorld.cleanupDevice();
-    fmt::print("init failed\n");
+  if(!theWorld.init(hwnd)) {
     flag = false;
+    return -1;
   }
-
-
-
-
 
   MSG msg;
   ZeroMemory(&msg,sizeof(msg));
@@ -35,10 +25,8 @@ int WINAPI WinMain(HINSTANCE hi,HINSTANCE ,LPSTR ,int cmd) {
       ::DispatchMessageA(&msg);
       continue;
     }
-    directWorld.draw();
+    theWorld.draw();
   }
-  FreeConsole();
-  directWorld.cleanupDevice();
   return 0;
 }
 
@@ -47,13 +35,14 @@ LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
   switch(msg) {
     case WM_SIZE:
       if(wParam != SIZE_MINIMIZED) {
-        if(directWorld.getSwapChain() != NULL) {
-          directWorld.cleanupRenderTarget();
-          directWorld.getSwapChain()->ResizeBuffers(0,(UINT)LOWORD(lParam),(UINT)HIWORD(lParam),DXGI_FORMAT_UNKNOWN,0);
-          directWorld.createRenderTarget();
+        if(theWorld.getSwapChain() != NULL) {
+          theWorld.getSwapChain()->ResizeBuffers(0,(UINT)LOWORD(lParam),(UINT)HIWORD(lParam),DXGI_FORMAT_UNKNOWN,0);
+          theWorld.createRenderTarget();
         }
       }
       break;
+    case WM_LBUTTONUP:
+      return 0;
     case WM_DESTROY:
       ::PostQuitMessage(0);
       return 0;
