@@ -83,6 +83,9 @@ void TheWorld::draw() {
     getContext()->IASetInputLayout(layout.Get());
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     getContext()->VSSetShader(vs.Get(),nullptr,0);
+    constantBufferData.modelMatrix = Matrix::CreateRotationZ(3.14/60) * constantBufferData.modelMatrix;
+    getContext()->UpdateSubresource(constantBuffer.Get(),0,0,&constantBufferData,0,0);
+    getContext()->VSSetConstantBuffers(0,1,constantBuffer.GetAddressOf());
     getContext()->PSSetShader(ps.Get(),nullptr,0);
     getContext()->DrawIndexed(6,0,0);
     getSwapChain()->Present(1,0);
