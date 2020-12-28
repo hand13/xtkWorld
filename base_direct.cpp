@@ -134,3 +134,17 @@ bool DirectWorld::createPixelShaderFromFile(const WCHAR * filename,LPCSTR entryP
   blob->Release();
   return true;
 }
+bool DirectWorld::createInputLayout(const WCHAR *filename,LPCSTR entryPoint
+,const D3D11_INPUT_ELEMENT_DESC * desc,UINT num,ID3D11InputLayout ** layout) {
+  ID3DBlob * blob = NULL;
+  HRESULT hr = this->compileD3DFile(filename,entryPoint,"vs_5_0",&blob);
+  if(FAILED(hr)) {
+    std::cout<<"failed to compileD3DFile"<<std::endl;
+    return false;
+  }
+  if(FAILED(m_device->CreateInputLayout(desc,num,blob->GetBufferPointer(),blob->GetBufferSize(),layout))){
+    return false;
+  }
+  blob->Release();
+  return true;
+}

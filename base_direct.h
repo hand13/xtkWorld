@@ -27,4 +27,6 @@ class DirectWorld {
     HRESULT compileD3DFile(const WCHAR * filename,LPCSTR entryPoint,LPCSTR profile,ID3DBlob ** outData);
     bool createVertexShaderFromFile(const WCHAR * filename,LPCSTR entryPoint,ID3D11VertexShader ** outShader);
     bool createPixelShaderFromFile(const WCHAR  * filename,LPCSTR entryPoint,ID3D11PixelShader ** outShader);
+    bool DirectWorld::createInputLayout(const WCHAR *filename,LPCSTR entryPoint
+    ,const D3D11_INPUT_ELEMENT_DESC * desc,UINT num,ID3D11InputLayout ** layout);
 };
