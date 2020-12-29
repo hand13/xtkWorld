@@ -3,6 +3,7 @@
 #include <Effects.h>
 #include <memory>
 #include <SimpleMath.h>
+#include "obj.h"
 using DirectX::SimpleMath::Matrix;
 struct ConstantBuffer {
     Matrix modelMatrix;
@@ -19,6 +20,7 @@ class TheWorld:public DirectWorld {
     ComPtr<ID3D11VertexShader> vs;
     ComPtr<ID3D11PixelShader> ps;
     ConstantBuffer constantBufferData;
+    ObjShape os;
     public: 
     TheWorld(){
     }

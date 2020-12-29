@@ -1,28 +1,40 @@
 #include "direct_world.h"
 #include <WICTextureLoader.h>
 #include <DirectXColors.h>
-const WCHAR * VS_PATH=L"vs.hlsl";
-const WCHAR * PS_PATH=L"ps.hlsl";
+const WCHAR * VS_PATH=L"e:\\vs.hlsl";
+const WCHAR * PS_PATH=L"e:\\ps.hlsl";
 bool TheWorld::initResource() {
     DirectX::CreateWICTextureFromFile(getDevice().Get(),L"e:\\test.jpg",nullptr,
     m_texture.ReleaseAndGetAddressOf());
+    std::vector<ObjShape> oss = loadFromFile("e:\\cube.obj");
+    if(oss.size() <= 0) {
+        return false;
+    }
+    os = oss[0];
+
     float vertices[] = {
         -0.5,-0.5,0.0    ,0.0,1.0,
         0.5,-0.5,0.0     ,1.0,1.0,
         0.5,0.5,0.0     ,1.0,0.0,
         -0.5,0.5,0.0     ,0.0,0.0
     };
-    unsigned short indices[] = {0,3,2,2,1,0};
+    unsigned short indices[] = 
+    {0,3,2,2,1,0};
+    // unsigned short indices[] = 
+    // {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
+    //  17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35};
     D3D11_BUFFER_DESC vertexDesc;
     ZeroMemory(&vertexDesc,sizeof(vertexDesc));
     vertexDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     vertexDesc.ByteWidth = sizeof(float) * ARRAYSIZE(vertices);
+    // vertexDesc.ByteWidth = sizeof(float) * os.vertices.size();
     vertexDesc.Usage = D3D11_USAGE_DEFAULT;
     vertexDesc.CPUAccessFlags = 0;
     vertexDesc.StructureByteStride = 0;
     vertexDesc.MiscFlags = 0;
     D3D11_SUBRESOURCE_DATA vertexBufferData;
     vertexBufferData.pSysMem = vertices;
+    // vertexBufferData.pSysMem = os.vertices.data();
     vertexBufferData.SysMemPitch= 0;
     vertexBufferData.SysMemSlicePitch= 0;
 
@@ -72,7 +84,8 @@ bool TheWorld::initResource() {
     return true;
 }
 void TheWorld::draw() {
-    UINT stride = 20;
+    UINT stride = 4 * 5;
+    // UINT stride = 36 * 5;
     UINT offset = 0;
     getContext()->OMSetRenderTargets(1,getMainRenderTargetView().GetAddressOf(),nullptr);
     const float clearColor[] = {0.0,0.0,0.0,1.0};
@@ -88,5 +101,6 @@ void TheWorld::draw() {
     getContext()->VSSetConstantBuffers(0,1,constantBuffer.GetAddressOf());
     getContext()->PSSetShader(ps.Get(),nullptr,0);
     getContext()->DrawIndexed(6,0,0);
+    // getContext()->DrawIndexed(36,0,0);
     getSwapChain()->Present(1,0);
 }
