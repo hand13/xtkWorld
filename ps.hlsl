@@ -3,8 +3,8 @@ struct PixelIn{
     float2 texCoord:TEXCOORD;
 };
 float4 main(PixelIn pin):SV_TARGET {
-    float2 xy = float2(frac(pin.texCoord.x * 4),frac(pin.texCoord.y * 4));
+    float2 xy = float2(frac(pin.texCoord.x * 10),frac(pin.texCoord.y * 10));
     float len = distance(xy,float2(0.5f,0.5f));
-    float col = clamp(len,0.0f,1.0f);
-    return float4(col,col,col,1.0f);
+    float col = clamp(len * 2,0.0f,1.0f);
+    return float4(float3(1.0f,0.7f,0.3f) * col,1.0f);
 }

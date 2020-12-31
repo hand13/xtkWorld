@@ -1,8 +1,8 @@
 #include "direct_world.h"
 #include <WICTextureLoader.h>
 #include <DirectXColors.h>
-const WCHAR * VS_PATH=L".\\.\\vs.hlsl";
-const WCHAR * PS_PATH=L".\\.\\ps.hlsl";
+const WCHAR * VS_PATH=L"..\\..\\vs.hlsl";
+const WCHAR * PS_PATH=L"..\\..\\ps.hlsl";
 bool TheWorld::initResource() {
     constantBufferData.modelMatrix = Matrix::CreateScale(0.3f);
     constantBufferData.viewMatrix = Matrix::CreateTranslation({0.0f,0.0f,0.6f});
