@@ -9,14 +9,14 @@ int WINAPI WinMain(HINSTANCE hi,HINSTANCE ,LPSTR ,int cmd) {
   WNDCLASSEX wc = {sizeof(WNDCLASSEX),CS_CLASSDC,WndProc,0L,0L,hi,NULL,NULL,NULL,NULL,TEXT("testing"),NULL};
   ::RegisterClassEx(&wc);
   HWND hwnd = CreateWindow(TEXT("testing"),TEXT("ho"),WS_OVERLAPPEDWINDOW,100,100,600,600,NULL,NULL,wc.hInstance,NULL);
-  ::ShowWindow(hwnd,cmd);
-  ::UpdateWindow(hwnd);
   bool flag = true;
   if(!theWorld.init(hwnd)) {
     flag = false;
     return -1;
   }
 
+  ::ShowWindow(hwnd,cmd);
+  ::UpdateWindow(hwnd);
   MSG msg;
   ZeroMemory(&msg,sizeof(msg));
   while(msg.message != WM_QUIT) {
