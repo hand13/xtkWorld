@@ -14,11 +14,8 @@ class TheWorld:public DirectWorld {
     private:
     ComPtr<ID3D11ShaderResourceView> m_texture;
     ComPtr<ID3D11Buffer> vertexBuffer;
-    ComPtr<ID3D11Buffer> indexBuffer;
     ComPtr<ID3D11InputLayout> layout;
-    ComPtr<ID3D11Buffer> constantBuffer;
-    ComPtr<ID3D11VertexShader> vs;
-    ComPtr<ID3D11PixelShader> ps;
+    std::unique_ptr<DirectX::BasicEffect> effect;
     ConstantBuffer constantBufferData;
     ObjShape os;
     public: 

@@ -42,6 +42,10 @@ std::vector<ObjShape> loadFromFile(std::string fileName) {
         os.vertices.push_back(vx);
         os.vertices.push_back(vy);
         os.vertices.push_back(vz);
+        os.vertices.push_back(1.0);
+        os.vertices.push_back(nx);
+        os.vertices.push_back(ny);
+        os.vertices.push_back(nz);
         os.vertices.push_back(tx);
         os.vertices.push_back(ty);
       }

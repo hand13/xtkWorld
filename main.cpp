@@ -6,6 +6,7 @@
 #include "direct_world.h"
 static TheWorld theWorld;
 int WINAPI WinMain(HINSTANCE hi,HINSTANCE ,LPSTR ,int cmd) {
+  CoInitialize(NULL);
   WNDCLASSEX wc = {sizeof(WNDCLASSEX),CS_CLASSDC,WndProc,0L,0L,hi,NULL,NULL,NULL,NULL,TEXT("testing"),NULL};
   ::RegisterClassEx(&wc);
   HWND hwnd = CreateWindow(TEXT("testing"),TEXT("ho"),WS_OVERLAPPEDWINDOW,100,100,600,600,NULL,NULL,wc.hInstance,NULL);
