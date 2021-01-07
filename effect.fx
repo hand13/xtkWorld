@@ -5,8 +5,8 @@ struct VertexIn {
 };
 struct VertexOut {
     float4 PosH : SV_POSITION;
-    flaot4 Color:COLOR;
-}
+    float4 Color:COLOR;
+};
 VertexOut VS(VertexIn vin) {
     VertexOut vout;
     vout.PosH = mul(float4(vin.PosL,1.0f),gWorldViewProj);
