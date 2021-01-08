@@ -1,14 +1,17 @@
 #include "direct_world.h"
 #include <WICTextureLoader.h>
 #include <DirectXColors.h>
+using DirectX::SimpleMath::Vector3;
 bool TheWorld::initResource() {
     if(FAILED(DirectX::CreateWICTextureFromFile(getDevice().Get(),L"e:\\test.jpg",nullptr,
     m_texture.ReleaseAndGetAddressOf()))) {
         return false;
     }
-    constantBufferData.modelMatrix = Matrix::CreateScale(0.3f);
-    constantBufferData.viewMatrix = Matrix::CreateTranslation({0.0f,0.0f,0.6f});
-    constantBufferData.viewMatrix = Matrix::CreateFromYawPitchRoll(0.5f,0.5f,0.5f) * constantBufferData.viewMatrix;
+    constantBufferData.modelMatrix = Matrix::Identity;
+    constantBufferData.viewMatrix = Matrix::CreateLookAt(Vector3(7.f,0.f,0.f)
+    ,Vector3::Zero,Vector3::UnitZ);
+    constantBufferData.projectionMatrix = Matrix::CreatePerspectiveFieldOfView(70.f/180.f,
+    1,0.1f,20.f);
     effect = std::make_unique<DirectX::BasicEffect>(getDevice().Get());
     effect->SetWorld(constantBufferData.modelMatrix);
     effect->SetView(constantBufferData.viewMatrix);
@@ -60,8 +63,8 @@ void TheWorld::draw() {
     setViewport();
     const float clearColor[] = {0.0,0.0,0.0,1.0};
     getContext()->ClearRenderTargetView(getMainRenderTargetView().Get(),clearColor);
-    constantBufferData.modelMatrix = Matrix::CreateRotationX(0.3) * constantBufferData.modelMatrix;
-    effect->SetWorld(constantBufferData.modelMatrix);
+    // constantBufferData.modelMatrix = Matrix::CreateRotationX(0.1) * constantBufferData.modelMatrix;
+    // effect->SetWorld(constantBufferData.modelMatrix);
     effect->Apply(getContext().Get());
     getContext()->IASetVertexBuffers(0,1,vertexBuffer.GetAddressOf(),&stride,&offset);
     getContext()->IASetInputLayout(layout.Get());
