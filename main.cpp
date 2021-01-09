@@ -33,6 +33,9 @@ int WINAPI WinMain(HINSTANCE hi,HINSTANCE ,LPSTR ,int cmd) {
 
 
 LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+  static int beforeX = 0;
+  static int beforeY = 0;
+  short i = 0;
   switch(msg) {
     case WM_SIZE:
       if(wParam != SIZE_MINIMIZED) {
@@ -46,6 +49,24 @@ LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
       return 0;
     case WM_DESTROY:
       ::PostQuitMessage(0);
+      return 0;
+    case WM_MOUSEWHEEL:
+      i = HIWORD(wParam);
+      theWorld.length += (i / 1000.f);
+      return 0;
+    case WM_MOUSEMOVE:
+      if(wParam == MK_LBUTTON) {
+        int x = LOWORD(lParam);
+        int y = HIWORD(lParam);
+        if(beforeX == 0 && beforeY == 0) {
+          beforeX = x;
+          beforeY = y;
+        }
+        int deltaX = x - beforeX;
+        int deltaY = x - beforeY;
+        theWorld.angle.x += deltaX/3000.0;
+        theWorld.angle.y += deltaY/3000.0;
+      }
       return 0;
   }
   return ::DefWindowProc(hwnd,msg,wParam,lParam);

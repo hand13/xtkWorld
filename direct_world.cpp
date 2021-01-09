@@ -7,18 +7,12 @@ bool TheWorld::initResource() {
     m_texture.ReleaseAndGetAddressOf()))) {
         return false;
     }
-    constantBufferData.modelMatrix = Matrix::Identity;
-    constantBufferData.viewMatrix = Matrix::CreateLookAt(Vector3(7.f,0.f,0.f)
-    ,Vector3::Zero,Vector3::UnitZ);
-    constantBufferData.projectionMatrix = Matrix::CreatePerspectiveFieldOfView(70.f/180.f,
-    1,0.1f,20.f);
     effect = std::make_unique<DirectX::BasicEffect>(getDevice().Get());
-    effect->SetWorld(constantBufferData.modelMatrix);
-    effect->SetView(constantBufferData.viewMatrix);
-    effect->SetProjection(constantBufferData.projectionMatrix);
+    updateView();
     effect->SetTexture(m_texture.Get());
     effect->SetTextureEnabled(true);
     effect->EnableDefaultLighting();
+    commonStates = std::make_unique<DirectX::CommonStates>(getDevice().Get());
     std::vector<ObjShape> oss = loadFromFile("cube.obj");
     if(oss.size() <= 0) {
         return false;
@@ -55,6 +49,17 @@ bool TheWorld::initResource() {
     }
     return true;
 }
+void TheWorld::updateView() {
+    constantBufferData.modelMatrix = Matrix::CreateFromYawPitchRoll(angle.x,angle.y,angle.z);
+    constantBufferData.viewMatrix = Matrix::CreateLookAt(Vector3(length,0.f,0.f)
+    ,Vector3::Zero,Vector3::UnitZ);
+    constantBufferData.projectionMatrix = Matrix::CreatePerspectiveFieldOfView(70.f/180.f,
+    1,0.1f,20.f);
+    effect->SetWorld(constantBufferData.modelMatrix);
+    effect->SetView(constantBufferData.viewMatrix);
+    effect->SetProjection(constantBufferData.projectionMatrix);
+}
+
 void TheWorld::draw() {
     UINT size = 4 + 3 + 2;
     UINT stride = sizeof(float) * size;
@@ -63,8 +68,11 @@ void TheWorld::draw() {
     setViewport();
     const float clearColor[] = {0.0,0.0,0.0,1.0};
     getContext()->ClearRenderTargetView(getMainRenderTargetView().Get(),clearColor);
+    getContext()->OMSetBlendState(commonStates->Opaque(),DirectX::Colors::Black,0xFFFFFFFF);
+    getContext()->OMSetDepthStencilState(commonStates->DepthDefault(),0);
     // constantBufferData.modelMatrix = Matrix::CreateRotationX(0.1) * constantBufferData.modelMatrix;
     // effect->SetWorld(constantBufferData.modelMatrix);
+    updateView();
     effect->Apply(getContext().Get());
     getContext()->IASetVertexBuffers(0,1,vertexBuffer.GetAddressOf(),&stride,&offset);
     getContext()->IASetInputLayout(layout.Get());
